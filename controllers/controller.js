@@ -2,7 +2,9 @@ const { UserModel } = require('../model/schemas/user.schema');
 const { GameModel } = require('../model/schemas/game.schema');
 const { TokenModel } = require('../model/schemas/token.schema');
 const verifyEmail = require('../verify/verifyEmail');
+const dotenv = require('dotenv');
 
+dotenv.config();
 class Controller {
 	async saveUserRegisterData(req, res) {
 		const data = req.body;
@@ -30,7 +32,7 @@ class Controller {
 				res.status(200).json({ type: 'success', message: 'Thành công!' });
 			} else {
 				res
-					.status(401)
+					.status(200)
 					.json({ type: 'error', message: 'Đã tồn tại tài khoản! Hãy đăng nhập hoặc đăng kí bằng một Email khác!' });
 			}
 		} catch (err) {
@@ -51,12 +53,12 @@ class Controller {
 				} else {
 					await UserModel.findOneAndDelete({ email: data.email });
 					await TokenModel.findOneAndDelete({ email: data.email });
-					res.status(401).json({ type: 'error', message: 'Mã OTP không đúng!' });
+					res.status(200).json({ type: 'error', message: 'Mã OTP không đúng!' });
 				}
 			} else {
 				await UserModel.findOneAndDelete({ email: data.email });
 				await TokenModel.findOneAndDelete({ email: data.email });
-				res.status(404).json({ type: 'error', message: 'Mã OTP hết hạn!' });
+				res.status(200).json({ type: 'error', message: 'Mã OTP hết hạn!' });
 			}
 		} catch (err) {
 			console.log(err);
@@ -94,20 +96,26 @@ class Controller {
 			if (user) {
 				if (data.password === user.password) {
 					if (user.isVerify) {
-						res.status(200).json({ type: 'success', message: 'Đăng nhập thành công!' });
+						res.status(200).json({
+							type: 'success',
+							message: 'Đăng nhập thành công!',
+							token: process.env.token,
+						});
 					} else {
-						res
-							.status(403)
-							.json({
-								type: 'error',
-								message: 'Tài khoản chưa được xác thực! Hãy xác thực để sử dụng các dịch vụ của chúng tôi!',
-							});
+						res.status(200).json({
+							type: 'error',
+							message: 'Tài khoản chưa được xác thực! Hãy xác thực để sử dụng các dịch vụ của chúng tôi!',
+						});
 					}
 				} else {
-					res.status(404).json({ type: 'error', message: 'Sai mật khẩu!' });
+					res.status(200).json({ type: 'error', message: 'Sai mật khẩu!' });
 				}
 			} else {
-				res.status(404);
+				res.status(200),
+					json({
+						type: 'error',
+						message: 'Không tồn tại tài khoản này!',
+					});
 			}
 		} catch (err) {
 			console.log(err);
