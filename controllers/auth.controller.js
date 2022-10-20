@@ -70,6 +70,10 @@ class AuthController {
 			res.status(500);
 		}
 	}
+
+	async setPoint(req, res) {
+		
+	}
 }
 
 module.exports = AuthController;
