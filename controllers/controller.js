@@ -1,7 +1,4 @@
 const { UserModel } = require('../model/schemas/user.schema');
-const { GameModel } = require('../model/schemas/game.schema');
-const { TokenModel } = require('../model/schemas/token.schema');
-const verifyEmail = require('../verify/verifyEmail');
 const dotenv = require('dotenv');
 
 dotenv.config();
