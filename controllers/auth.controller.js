@@ -34,7 +34,9 @@ class AuthController {
 		try {
 			const user = await UserModel.findOne({ email: req.body.email });
 			if (user) {
-				res.status(200).json({ type: 'success', message: user });
+				if (user.token.length > 0) {
+					res.status(200).json({ type: 'success', message: user });
+				} else res.status(200).json({ type: 'error', message: 'Bạn chưa đăng nhập!' });
 			} else res.status(200).json({ type: 'error', message: 'Không tồn tại người dùng!' });
 		} catch (err) {
 			res.status(500);
@@ -47,7 +49,7 @@ class AuthController {
 			const user = await UserModel.findOne({ email: data.email });
 			if (user) {
 				if (data.password === user.password) {
-					await UserModel.findOneAndUpdate({email: data.email},{token: process.env.token})
+					await UserModel.findOneAndUpdate({ email: data.email }, { token: process.env.token });
 					res.status(200).json({
 						type: 'success',
 						message: 'Đăng nhập thành công!',
@@ -70,4 +72,4 @@ class AuthController {
 	}
 }
 
-module.exports = AuthController
+module.exports = AuthController;
