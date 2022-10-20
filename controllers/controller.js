@@ -7,106 +7,54 @@ const dotenv = require('dotenv');
 dotenv.config();
 class Controller {
 	async saveUserRegisterData(req, res) {
-		const data = req.body;
-		const user = await UserModel.findOne({ email: data.email });
-		let today = new Date();
-
 		try {
+			const data = req.body;
+			const user = await UserModel.findOne({ email: data.email });
+			let today = new Date();
+
 			if (!user) {
-				let otp = '';
-				for (let i = 0; i < 6; i++) {
-					otp += `${Math.floor(Math.random() * 11)}`;
-				}
-				await TokenModel.create({ email: data.email, token: otp });
 				const newUser = {
 					username: data.username,
 					email: data.email,
 					password: data.password,
-					isVerified: false,
 					point: 0,
 					game: [],
 					date_create: today,
 				};
 				await UserModel.create(newUser);
-				verifyEmail(req, res, otp);
-				res.status(200).json({ type: 'success', message: 'Thành công!' });
+				res.status(200).json({ type: 'success', message: 'Đăng kí thành công!' });
 			} else {
-				res
-					.status(200)
-					.json({ type: 'error', message: 'Đã tồn tại tài khoản! Hãy đăng nhập hoặc đăng kí bằng một Email khác!' });
+				res.status(200).json({ type: 'error', message: 'Tài khoản đã tồn tại!' });
 			}
 		} catch (err) {
 			console.log(err);
-			res.status(500).json({ type: 'error', message: 'Lỗi hệ thống! ' });
+			res.status(500);
 		}
 	}
 
-	async verifiedEmail(req, res) {
-		let data = req.body;
-		let token = await TokenModel.findOne({ email: data.email });
+	async getUserInfo(req, res) {
 		try {
-			if (token) {
-				if (data.code == token.token) {
-					await UserModel.findOneAndUpdate({ email: data.email }, { isVerify: true });
-					await TokenModel.findOneAndDelete({ email: data.email });
-					res.status(200).json({ type: 'success', message: 'Xác thực thành công!' });
-				} else {
-					await UserModel.findOneAndDelete({ email: data.email });
-					await TokenModel.findOneAndDelete({ email: data.email });
-					res.status(200).json({ type: 'error', message: 'Mã OTP không đúng!' });
-				}
-			} else {
-				await UserModel.findOneAndDelete({ email: data.email });
-				await TokenModel.findOneAndDelete({ email: data.email });
-				res.status(200).json({ type: 'error', message: 'Mã OTP hết hạn!' });
-			}
-		} catch (err) {
-			console.log(err);
-			res.status(500).json({ type: 'error', message: 'Lỗi hệ thống! ' });
-		}
-	}
+			const user = await UserModel.findOne({ email: req.body.email });
 
-	async deleteToken(req, res) {
-		const data = req.body;
-		try {
-			setTimeout(async () => {
-				await TokenModel.findOneAndDelete({ email: data.email });
-			}, 32000);
-			res.status(200).json({ type: 'success', message: 'OTP sẽ bị xóa sau 30s!' });
+			if (user) {
+				res.status(200).json({ type: 'success', message: user });
+			} else res.status(200).json({ type: 'error', message: 'Không tồn tại người dùng!' });
 		} catch (err) {
-			console.log(err);
-			res.status(500).json({ type: 'error', message: 'Lỗi hệ thống! ' });
+			res.status(500);
 		}
-	}
-
-	resendCode(req, res) {
-		const data = req.body;
-		let otp = '';
-		for (let i = 0; i < 6; i++) {
-			otp += `${Math.floor(Math.random() * 11)}`;
-		}
-		verifyEmail(req, res, otp);
-		res.status(200).json({ type: 'success', message: 'Một mã xác thực đã được gửi đến tài khoản Email của bạn!' });
 	}
 
 	async postLogin(req, res) {
-		const data = req.body;
-		const user = await UserModel.findOne({ email: data.email });
 		try {
+			const data = req.body;
+			const user = await UserModel.findOne({ email: data.email });
 			if (user) {
 				if (data.password === user.password) {
-					if (user.isVerify) {
-						res.status(200).json({
-							type: 'success',
-							message: 'Đăng nhập thành công!',
-							token: process.env.token,
-						});
-					} else {
-						res.status(200).json({
-							type: 'error',
-							message: 'Tài khoản chưa được xác thực! Hãy xác thực để sử dụng các dịch vụ của chúng tôi!',
-						});
-					}
+					res.status(200).json({
+						type: 'success',
+						message: 'Đăng nhập thành công!',
+						token: process.env.token,
+					});
 				} else {
 					res.status(200).json({ type: 'error', message: 'Sai mật khẩu!' });
 				}
@@ -119,7 +67,7 @@ class Controller {
 			}
 		} catch (err) {
 			console.log(err);
-			res.status(500).json({ type: 'error', message: 'Lỗi hệ thống!' });
+			res.status(500);
 		}
 	}
 }

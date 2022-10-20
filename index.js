@@ -10,7 +10,7 @@ const router = require('./routes/user.route');
 const PORT = 8000;
 
 dotenv.config();
-mongoose.connect(process.env.DB_URL, () => {
+mongoose.connect(process.env.URL_DB, () => {
 	console.log('DB connected!');
 });
 
