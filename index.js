@@ -6,7 +6,6 @@ let bodyParser = require('body-parser');
 const morgan = require('morgan');
 const dotenv = require('dotenv');
 const router = require('./routes/auth.route');
-const userRouter = require('./routes/user.route')
 
 const port = process.env.PORT || 3000;
 
@@ -21,7 +20,6 @@ mongoose.connect(
 app.use(bodyParser.json({ limit: '50mb' }));
 
 app.use(morgan('common'));
-app.use('/user', userRouter);
 app.use('/api', router);
 
 app.listen(port, () => {
