@@ -7,7 +7,7 @@ const morgan = require('morgan');
 const dotenv = require('dotenv');
 const router = require('./routes/user.route');
 
-const PORT = 8000;
+const port = process.env.PORT || 3000;
 
 dotenv.config();
 mongoose.connect(process.env.URL_DB, () => {
