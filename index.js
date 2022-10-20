@@ -5,9 +5,9 @@ const mongoose = require('mongoose');
 let bodyParser = require('body-parser');
 const morgan = require('morgan');
 const dotenv = require('dotenv');
-const router = require('./routes/user.route');
+const router = require('./routes/auth.route');
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 8000;
 
 dotenv.config();
 mongoose.connect('mongodb+srv://admin395:neCVCjNrS4269Yiv@casem5reactjs.8wszhbp.mongodb.net/?retryWrites=true&w=majority', () => {

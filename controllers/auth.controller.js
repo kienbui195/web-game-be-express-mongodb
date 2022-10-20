@@ -2,8 +2,8 @@ const { UserModel } = require('../model/schemas/user.schema');
 const dotenv = require('dotenv');
 
 dotenv.config();
-class Controller {
-	async saveUserRegisterData(req, res) {
+class AuthController {
+	async register(req, res) {
 		try {
 			const data = req.body;
 			const user = await UserModel.findOne({ email: data.email });
@@ -69,6 +69,4 @@ class Controller {
 	}
 }
 
-const controller = new Controller();
-
-module.exports = { controller };
+module.exports = AuthController
