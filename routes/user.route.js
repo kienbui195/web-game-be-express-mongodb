@@ -6,7 +6,7 @@ const userRouter = require('express').Router();
 
 let userController = new UserController()
 
-router.post('/set-point', (req, res) => {
+userRouter.post('/set-point', (req, res) => {
     userController.setPoint(req, res).catch(() => res.status(500).json('server error'))
 });
 
