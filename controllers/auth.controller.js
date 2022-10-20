@@ -49,11 +49,11 @@ class AuthController {
 			const user = await UserModel.findOne({ email: data.email });
 			if (user) {
 				if (data.password === user.password) {
-					await UserModel.findOneAndUpdate({ email: data.email }, { token: process.env.token });
+					await UserModel.findOneAndUpdate({ email: data.email }, { token: `${process.env.token}` });
 					res.status(200).json({
 						type: 'success',
 						message: 'Đăng nhập thành công!',
-						token: process.env.token,
+						token: `${process.env.token}`
 					});
 				} else {
 					res.status(200).json({ type: 'error', message: 'Sai mật khẩu!' });
