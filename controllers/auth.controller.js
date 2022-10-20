@@ -19,13 +19,13 @@ class AuthController {
 					date_create: today,
 				};
 				await UserModel.create(newUser);
-				res.status(200).json({ type: 'success', message: 'Đăng kí thành công!' });
+				return res.status(200).json({ type: 'success', message: 'Đăng kí thành công!' });
 			} else {
-				res.status(200).json({ type: 'error', message: 'Tài khoản đã tồn tại!' });
+				return res.status(200).json({ type: 'error', message: 'Tài khoản đã tồn tại!' });
 			}
 		} catch (err) {
 			console.log(err);
-			res.status(500);
+			return res.status(500);
 		}
 	}
 
