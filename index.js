@@ -19,6 +19,6 @@ app.use(cors());
 app.use(morgan('common'));
 app.use('/api', router);
 
-app.listen(PORT, () => {
-	console.log(`Server is running at http://localhost:${PORT}`);
+app.listen(port, () => {
+	console.log(`Server is running at http://localhost:${port}`);
 });
