@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 let bodyParser = require('body-parser');
 const morgan = require('morgan');
 const dotenv = require('dotenv');
-const router = require('./routes/user.route');
+const router = require('./routes/auth.route');
 
 const port = process.env.PORT || 3000;
 
