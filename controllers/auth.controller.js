@@ -15,6 +15,7 @@ class AuthController {
 					email: data.email,
 					password: data.password,
 					point: 0,
+					token: '',
 					game: [],
 					date_create: today,
 				};
@@ -32,7 +33,6 @@ class AuthController {
 	async getUserInfo(req, res) {
 		try {
 			const user = await UserModel.findOne({ email: req.body.email });
-
 			if (user) {
 				res.status(200).json({ type: 'success', message: user });
 			} else res.status(200).json({ type: 'error', message: 'Không tồn tại người dùng!' });
@@ -47,6 +47,7 @@ class AuthController {
 			const user = await UserModel.findOne({ email: data.email });
 			if (user) {
 				if (data.password === user.password) {
+					await UserModel.findOneAndUpdate({email: data.email},{token: process.env.token})
 					res.status(200).json({
 						type: 'success',
 						message: 'Đăng nhập thành công!',

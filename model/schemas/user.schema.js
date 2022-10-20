@@ -13,11 +13,8 @@ const userSchema = new mongoose.Schema({
 		type: String,
 		require: true,
 	},
-	isVerify: {
-		type: Boolean,
-		default: false,
-	},
 	point: Number,
+	token: String,
 	game: [
 		{
 			type: mongoose.Schema.Types.ObjectId,
