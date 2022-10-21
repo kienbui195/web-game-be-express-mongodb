@@ -49,11 +49,11 @@ class AuthController {
 			const user = await UserModel.findOne({ email: data.email });
 			if (user) {
 				if (data.password === user.password) {
-					await UserModel.findOneAndUpdate({ email: data.email }, { code: `${process.env.token}` });
+					await UserModel.findOneAndUpdate({ email: data.email }, { code: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9hvKAVAecgfQ25SidqOrqsrdH4TCKkBa1HhhTi4zqLN0' });
 					res.status(200).json({
 						type: 'success',
 						message: 'Đăng nhập thành công!',
-						code: `${process.env.token}`,
+						code: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9hvKAVAecgfQ25SidqOrqsrdH4TCKkBa1HhhTi4zqLN0',
 					});
 				} else {
 					res.status(200).json({ type: 'error', message: 'Sai mật khẩu!' });
