@@ -1,16 +1,12 @@
 const mongoose = require('mongoose');
 
 const managerSchema = new mongoose.Schema({
-	users: [
-		{
-			_id: {
-				type: mongoose.Schema.Types.ObjectId,
-				ref: 'user',
-			},
-		},
-	],
+    username: String,
+    email: String,
+    point: Number,
+    date_create: Date
 });
 
-const ManagerModel = mongoose.model('manager', managerSchema);
+const ManagerModel = mongoose.model('Manager', managerSchema);
 
 module.exports = { ManagerModel };
