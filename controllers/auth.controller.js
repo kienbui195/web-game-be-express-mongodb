@@ -53,7 +53,7 @@ class AuthController {
 					res.status(200).json({
 						type: 'success',
 						message: 'Đăng nhập thành công!',
-						token: `${process.env.token}`
+						token: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vZXNob3AtZWNvbW1lcnQuaGVyb2t1YXBwLmNvbS9hcGkvbG9naW4iLCJpYXQiOjE2NjYxNzQ4NTEsImV4cCI6MTY2NjE3ODQ1MSwibmJmIjoxNjY2MTc0ODUxLCJqdGkiOiJEQko0aVBqWGtFcVgzN3dJIiwic3ViIjoiMSIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.hvKAVAecgfQ25SidqOrqsrdH4TCKkBa1HhhTi4zqLN0'
 					});
 				} else {
 					res.status(200).json({ type: 'error', message: 'Sai mật khẩu!' });
