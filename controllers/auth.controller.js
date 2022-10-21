@@ -49,7 +49,6 @@ class AuthController {
 			const user = await UserModel.findOne({ email: data.email });
 			if (user) {
 				if (data.password === user.password) {
-					localStorage.setItem(`${user._id}`, `${user.point}`);
 					await UserModel.findOneAndUpdate({ email: data.email }, { code: `${process.env.token}` });
 					res.status(200).json({
 						type: 'success',
