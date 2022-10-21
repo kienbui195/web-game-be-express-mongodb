@@ -7,7 +7,7 @@ const morgan = require('morgan');
 const dotenv = require('dotenv');
 const router = require('./routes/auth.route');
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 8000;
 
 app.use(cors());
 dotenv.config();

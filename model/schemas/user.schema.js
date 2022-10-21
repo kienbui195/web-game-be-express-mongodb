@@ -14,14 +14,8 @@ const userSchema = new mongoose.Schema({
 		require: true,
 	},
 	point: Number,
-	token: String,
-	game: [
-		{
-			type: mongoose.Schema.Types.ObjectId,
-			ref: 'game'
-		},
-	],
-	date_create: Date,
+	code: String,
+	date_create: Date
 });
 
 const UserModel = mongoose.model('user', userSchema);

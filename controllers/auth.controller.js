@@ -1,32 +1,32 @@
 const { UserModel } = require('../model/schemas/user.schema');
+const { ManagerModel } = require('../model/schemas/manager.schema');
 const dotenv = require('dotenv');
 
 dotenv.config();
+
 class AuthController {
 	async register(req, res) {
 		try {
 			const data = req.body;
 			const user = await UserModel.findOne({ email: data.email });
 			let today = new Date();
-
 			if (!user) {
 				const newUser = {
 					username: data.username,
 					email: data.email,
 					password: data.password,
 					point: 0,
-					token: '',
-					game: [],
+					code: '',
 					date_create: today,
 				};
 				await UserModel.create(newUser);
 				return res.status(200).json({ type: 'success', message: 'Đăng kí thành công!' });
 			} else {
-				return res.status(200).json({ type: 'error', message: 'Tài khoản đã tồn tại!' });
+				return res.status(200).json({ type: 'notexist', message: 'Tài khoản đã tồn tại!' });
 			}
 		} catch (err) {
 			console.log(err);
-			return res.status(500);
+			res.status(500).json('Server error');
 		}
 	}
 
@@ -34,12 +34,12 @@ class AuthController {
 		try {
 			const user = await UserModel.findOne({ email: req.body.email });
 			if (user) {
-				if (user.token.length > 0) {
+				if (user.code === req.body.code) {
 					res.status(200).json({ type: 'success', message: user });
 				} else res.status(200).json({ type: 'error', message: 'Bạn chưa đăng nhập!' });
-			} else res.status(200).json({ type: 'error', message: 'Không tồn tại người dùng!' });
+			} else res.status(200).json({ type: 'notexist', message: 'Không tồn tại người dùng!' });
 		} catch (err) {
-			res.status(500);
+			res.status(500).json('Server error');
 		}
 	}
 
@@ -49,11 +49,12 @@ class AuthController {
 			const user = await UserModel.findOne({ email: data.email });
 			if (user) {
 				if (data.password === user.password) {
-					await UserModel.findOneAndUpdate({ email: data.email }, { token: `${process.env.token}` });
+					localStorage.setItem(`${user._id}`, `${user.point}`);
+					await UserModel.findOneAndUpdate({ email: data.email }, { code: `${process.env.token}` });
 					res.status(200).json({
 						type: 'success',
 						message: 'Đăng nhập thành công!',
-						token: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vZXNob3AtZWNvbW1lcnQuaGVyb2t1YXBwLmNvbS9hcGkvbG9naW4iLCJpYXQiOjE2NjYxNzQ4NTEsImV4cCI6MTY2NjE3ODQ1MSwibmJmIjoxNjY2MTc0ODUxLCJqdGkiOiJEQko0aVBqWGtFcVgzN3dJIiwic3ViIjoiMSIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.hvKAVAecgfQ25SidqOrqsrdH4TCKkBa1HhhTi4zqLN0'
+						code: `${process.env.token}`,
 					});
 				} else {
 					res.status(200).json({ type: 'error', message: 'Sai mật khẩu!' });
@@ -61,31 +62,54 @@ class AuthController {
 			} else {
 				res.status(200),
 					json({
-						type: 'error',
+						type: 'notexist',
 						message: 'Không tồn tại tài khoản này!',
 					});
 			}
 		} catch (err) {
 			console.log(err);
-			res.status(500);
+			res.status(500).json('Server error');
 		}
 	}
 
-
 	async setPoint(req, res) {
-        const data = req.body
-        const user = await UserModel.findOne({ email: data.email })
-        if (user) {
-            if (user.token.length > 0) {
-                await UserModel.findOneAndUpdate({ email: data.email }, { point: user.point + data.point })
-                res.status(200).json({type: 'success', message: 'Lưu điểm thành công!'})
-            } else {
-                res.status(200).json({type: 'error', message: 'Bạn chưa đăng nhập! Hãy đăng nhập để chơi game!'})
-            }
-        } else {
-            res.status(200).json({type: 'error', message: 'Tài khoản không tồn tại!'})
-        }
-    }
+		try {
+			const data = req.body;
+			const user = await UserModel.findOne({ email: data.email });
+			if (user) {
+				if (user.code === data.code) {
+					let pointUp = user.point + +data.point
+					await UserModel.findOneAndUpdate({ email: data.email }, { point: pointUp });
+					res.status(200).json({ type: 'success', message: 'Lưu điểm thành công!' });
+				} else {
+					res.status(200).json({ type: 'error', message: 'Bạn chưa đăng nhập! Hãy đăng nhập để chơi game!' });
+				}
+			} else {
+				res.status(200).json({ type: 'notexist', message: 'Tài khoản không tồn tại!' });
+			}
+		} catch (err) {
+			res.status(500).json('Server error');
+		}
+	}
+
+	async logout(req, res) {
+		try {
+			const data = req.body;
+			const user = await UserModel.findOne({ email: data.email });
+			if (user) {
+				if (user.code === data.code) {
+					await UserModel.findOneAndUpdate({ email: data.email }, { code: '' });
+					res.status(200).json({ type: 'success', message: 'Logout thành công!' });
+				} else {
+					res.status(200).json({ type: 'error', message: 'Người dùng chưa login!' });
+				}
+			} else {
+				res.status(200).json({ type: 'notexist', message: 'Không tồn tại người dùng!' });
+			}
+		} catch (err) {
+			res.status(500).json('Server error');
+		}
+	}
 }
 
 module.exports = AuthController;

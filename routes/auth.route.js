@@ -15,8 +15,12 @@ router.post('/login', (req, res) => {
 router.post('/user/info', (req, res) => {
 	authController.getUserInfo(req, res).catch(() => res.status(500).json('server error'));
 });
-router.post('/set-point', (req, res) => {
+router.post('/setpoint', (req, res) => {
 	authController.setPoint(req, res).catch(() => res.status(500).json('server error'));
 });
+router.post('/logout', (req, res) => {
+	authController.logout(req, res).catch(() => res.status(500).json('server error'));
+});
+
 
 module.exports = router;
