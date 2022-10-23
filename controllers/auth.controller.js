@@ -127,7 +127,7 @@ class AuthController {
 		try {
 			const list = await ManagerModel.find();
 			if (list) {
-				res.status(200).json({ type: 'success', message: 'Lấy data thành công!', data: `${list}` });
+				res.status(200).json({ type: 'success', message: 'Lấy data thành công!', data: `${JSON.stringify(list)}` });
 			} else {
 				res.status(200).json({ type: 'error', message: 'Lấy data thất bại!' });
 			}
@@ -135,6 +135,8 @@ class AuthController {
 			res.status(500).json('Server error');
 		}
 	}
+
+	
 }
 
 module.exports = AuthController;
