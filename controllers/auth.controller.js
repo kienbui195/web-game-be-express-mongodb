@@ -88,10 +88,12 @@ class AuthController {
 		try {
 			const data = req.body;
 			const user = await UserModel.findOne({ email: data.email });
-			if (user) {
+			const manager = await ManagerModel.findOne({email: data.email})
+			if (user && manager) {
 				if (user.code === data.code) {
 					let pointUp = user.point + +data.point;
 					await UserModel.findOneAndUpdate({ email: data.email }, { point: pointUp });
+					await ManagerModel.findOneAndUpdate({ email: data.email }, { point: pointUp });
 					res.status(200).json({ type: 'success', message: 'Lưu điểm thành công!' });
 				} else {
 					res.status(200).json({ type: 'error', message: 'Bạn chưa đăng nhập! Hãy đăng nhập để chơi game!' });
