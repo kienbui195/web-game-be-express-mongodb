@@ -1,5 +1,6 @@
 const { UserModel } = require('../model/schemas/user.schema');
 const { ManagerModel } = require('../model/schemas/manager.schema');
+const { GameModel } = require('../model/schemas/game.schema');
 const dotenv = require('dotenv');
 
 dotenv.config();
@@ -138,7 +139,46 @@ class AuthController {
 		}
 	}
 
-	
+	async dataGameUser(req, res) {
+		try {
+			const data = req.body;
+			const user = await GameModel.findOne({ email: data.email })
+			if (!user) {
+				const newUser = {
+					email: data.email,
+					code: data.code
+				}
+				await GameModel.create(newUser)
+				res.status(200).json({type: 'success', message: 'Thêm data user thành công!'})
+			} 
+		} catch (err) {
+			res.status(500).json('Server error')
+		}
+	}
+
+	async getDataUser(req, res) {
+		try {
+			const user = await GameModel.find();
+			if (user) {
+				res.status(200).json({type: 'success', message: `${JSON.stringify(user)}`})
+			} else {
+				res.status(200).json({type:'error', message: 'data rỗng!'})
+			}
+		} catch (err) {
+			res.status(500).json('Server error')
+		}
+	}
+
+	async clearUser(req, res) {
+		try {
+			const data = req.body;
+			const user = await GameModel.findOneAndDelete({ email: data.email })
+			res.status(200).json({type: 'success', message: 'Xóa thành công!'})
+		} catch (err) {
+			res.status(500).json('Server error')
+		}
+	}
+
 }
 
 module.exports = AuthController;

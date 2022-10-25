@@ -30,6 +30,16 @@ router.get('/getAllUser', (req, res) => {
 	authController.getAllInfo(req, res).catch(() => res.status(500).json('server error'));
 });
 
+router.post('/sendUser', (req, res) => {
+	authController.dataGameUser(req, res).catch(() => res.status(500).json('server error'));
+});
 
+router.get('/getUser', (req, res) => {
+	authController.getDataUser(req, res).catch(() => res.status(500).json('server error'));
+});
+
+router.post('/clearUser', (req, res) => {
+	authController.clearUser(req, res).catch(() => res.status(500).json('server error'));
+});
 
 module.exports = router;
